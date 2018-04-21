@@ -21,11 +21,6 @@
 #'   sample size is increased/decreased after one click of the +/- button.
 #' @param delta_rho A numeric scalar.  The amount by which the value of
 #'   rho is increased/decreased after one click of the +/- button.
-#' @param pos A numeric integer.  Used in calls to \code{\link{assign}}
-#'   to make information available across successive frames of a movie.
-#'   By default, uses the current environment.
-#' @param envir An alternative way (to \code{pos}) of specifying the
-#'   environment. See \code{\link{environment}}.
 #' @param ... Additional arguments to the rpanel functions
 #'   \code{\link[rpanel]{rp.button}} and
 #'   \code{\link[rpanel]{rp.doublebutton}}, not including \code{panel},
@@ -74,13 +69,15 @@
 #' correlation(n = 10)
 #' @export
 correlation <- function(n = 30, rho = 0, panel_plot = TRUE, hscale = NA,
-                        vscale = hscale, delta_n = 1, delta_rho = 0.1, pos = 1,
-                        envir = as.environment(pos), ...) {
+                        vscale = hscale, delta_n = 1, delta_rho = 0.1,  ...) {
+  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
+    message("Package BWidget was not found.")
+    message("Please see the smovie README file for information.")
+    return()
+  }
   temp <- set_scales(hscale, vscale)
   hscale <- temp$hscale
   vscale <- temp$vscale
-  # Assign variables to an environment so that they can be accessed inside
-  # corr_sim_movie_plot()
   if (n < 2) {
     stop("n must not be less than 2")
   }
@@ -93,24 +90,44 @@ correlation <- function(n = 30, rho = 0, panel_plot = TRUE, hscale = NA,
   rho_init <- rho
   nsim <- nsim_init <- n
   rvals <- NULL
+  vals <- NULL
   fisher_z <- FALSE
   pdf_or_cdf <- "pdf"
   #
-  assign("nseed_old", nseed_init, envir = envir)
-  assign("rho_old", rho_init, envir = envir)
-  assign("nsim_old", nsim_init, envir = envir)
-  assign("rvals", rvals, envir = envir)
-  assign("fisher_z_old", fisher_z, envir = envir)
-  assign("old_pdf_or_cdf", pdf_or_cdf, envir = envir)
+  now_time <- strsplit(substr(date(), 12, 19), ":")[[1]]
+  now_time <- paste(now_time[1], now_time[2], now_time[3], sep = "")
+  # Set a unique panel name to enable saving of objects to the correct panel
+  my_panelname <- paste("correlation_", now_time, sep = "")
+  nseed_old <- nseed_init
+  rho_old <- rho_init
+  nsim_old <- nsim_init
+  fisher_z_old <- fisher_z
+  old_pdf_or_cdf <- pdf_or_cdf
   #
-  corr_sim_panel <- rpanel::rp.control("correlation", nsim = nsim_init,
-                                       rho = rho_init, nseed = nseed_init,
-                                       fisher_z = FALSE, pdf_or_cdf = "pdf",
-                                       envir = envir)
+  corr_sim_panel <- rpanel::rp.control("correlation", panelname = my_panelname,
+                                       nsim = nsim_init, rho = rho_init,
+                                       nseed = nseed_init, fisher_z = FALSE,
+                                       pdf_or_cdf = "pdf",
+                                       nseed_old = nseed_old,
+                                       rho_old = rho_old, nsim_old = nsim_old,
+                                       fisher_z_old = fisher_z,
+                                       old_pdf_or_cdf = pdf_or_cdf,
+                                       vals = vals, rvals = rvals)
   #
   redraw_plot <- NULL
   panel_redraw <- function(panel) {
     rpanel::rp.tkrreplot(panel = panel, name = redraw_plot)
+    # rp.tkrreplot() doesn't update the panel automatically, so do it manually
+    # Get ...
+    panel$vals <- rpanel::rp.var.get(my_panelname, "vals")
+    panel$rvals <- rpanel::rp.var.get(my_panelname, "rvals")
+    panel$nseed_old <- rpanel::rp.var.get(my_panelname, "nseed_old")
+    panel$rho_old <- rpanel::rp.var.get(my_panelname, "rho_old")
+    panel$nsim_old <- rpanel::rp.var.get(my_panelname, "nsim_old")
+    panel$fisher_z_old <- rpanel::rp.var.get(my_panelname, "fisher_z_old")
+    panel$old_pdf_or_cdf <- rpanel::rp.var.get(my_panelname, "old_pdf_or_cdf")
+    # Put ...
+    rpanel::rp.control.put(my_panelname, panel)
     return(panel)
   }
   if (panel_plot & !requireNamespace("tkrplot", quietly = TRUE)) {
@@ -155,15 +172,19 @@ correlation <- function(n = 30, rho = 0, panel_plot = TRUE, hscale = NA,
   rpanel::rp.radiogroup(panel= corr_sim_panel, pdf_or_cdf, c("pdf", "cdf"),
                         title = "pdf or cdf in bottom plot",
                         action = action)
+  if (!panel_plot) {
+    rpanel::rp.do(panel = corr_sim_panel, action = action)
+  }
   return(invisible())
 }
 
 # Function to be called by corr_sim_movie().
 
 corr_sim_movie_plot <- function(panel){
-  with(panel, {
-
-    old_par <- graphics::par(no.readonly = TRUE)
+  old_par <- graphics::par(no.readonly = TRUE)
+  # To please R CMD check
+  rho <- nsim <- fisher_z <- pdf_or_cdf <- nseed <- NULL
+  panel <- within(panel, {
     graphics::par(mfrow = c(1, 1), bty = "l", las = 1, oma = c(0, 0, 0, 0))
     if (rho != rho_old | nsim != nsim_old) {
       rvals <- NULL
@@ -176,21 +197,19 @@ corr_sim_movie_plot <- function(panel){
     if (cond1 & cond2 & cond3){
       vals <- matrix(stats::rnorm(2 * nsim), ncol = 2, nrow = nsim,
                      byrow = TRUE)
-      assign("vals", vals, envir = envir)
     }
     x1 <- vals[, 1]
     x2 <- vals[, 2]
     y1 <- rho * x1 + sqrt(1 - rho ^ 2) * x2
     sim_vals <- cbind(x1, y1)
-    nf <- layout(mat = matrix(c(0, 2, 2, 0,
-                                1, 1, 1, 1), nrow = 2, byrow = TRUE))
+    nf <- graphics::layout(mat = matrix(c(0, 2, 2, 0,
+                                          1, 1, 1, 1), nrow = 2, byrow = TRUE))
     if ((fisher_z_old & fisher_z) | (!fisher_z_old & !fisher_z)) {
       new_rval <- stats::cor(sim_vals)[1, 2]
       rvals <- c(rvals, new_rval)
     } else {
       new_rval <- rvals[length(rvals)]
     }
-    assign("rvals", rvals, envir = envir)
     graphics::par(mar = c(4, 4.2, 1, 1))
     atanh_rho <- atanh(rho)
     # Calculate the true density (under sampling from a BV normal)
@@ -329,10 +348,12 @@ corr_sim_movie_plot <- function(panel){
                          col.axis = "white")
           cex_val <- 2
           if (rho == 1) {
-            text(0, 0.5, "Fisher z value is always +Inf when rho = +1",
+            graphics::text(0, 0.5,
+                           "Fisher z value is always +Inf when rho = +1",
                  cex = cex_val)
           } else {
-            text(0, 0.5, "Fisher z value is always -Inf when rho = -1",
+            graphics::text(0, 0.5,
+                           "Fisher z value is always -Inf when rho = -1",
                  cex = cex_val)
           }
         }
@@ -352,10 +373,12 @@ corr_sim_movie_plot <- function(panel){
                          col.axis = "white")
           cex_val <- 2
           if (rho == 1) {
-            text(0, 0.5, "Fisher z value is always +Inf when rho = +1",
+            graphics::text(0, 0.5,
+                           "Fisher z value is always +Inf when rho = +1",
                  cex = cex_val)
           } else {
-            text(0, 0.5, "Fisher z value is always -Inf when rho = -1",
+            graphics::text(0, 0.5,
+                           "Fisher z value is always -Inf when rho = -1",
                  cex = cex_val)
           }
         }
@@ -395,17 +418,17 @@ corr_sim_movie_plot <- function(panel){
         graphics::axis(1, line = 0.5, at = c(-1e10, 1e10))
       }
     }
-    assign("nseed_old", nseed, envir = envir)
-    assign("rho_old", rho, envir = envir)
-    assign("nsim_old", nsim, envir = envir)
-    assign("fisher_z_old", fisher_z, envir = envir)
-    assign("old_pdf_or_cdf", pdf_or_cdf, envir = envir)
+    nseed_old <- nseed
+    rho_old <- rho
+    nsim_old <- nsim
+    fisher_z_old <- fisher_z
+    old_pdf_or_cdf <- pdf_or_cdf
     graphics::par(mar = c(3, 3, 2, 1))
     graphics::plot(sim_vals, pch = 16, xlab = "x", ylab = "y",
                    xlim = c(-3.5, 3.5), ylim = c(-3.5, 3.5))
     rhoval <- round(rho, 2)
-    rprint <- sprintf('%.2f', abs(cor(sim_vals)[1, 2]))
-    rval <- cor(sim_vals)[1, 2]
+    rprint <- sprintf('%.2f', abs(stats::cor(sim_vals)[1, 2]))
+    rval <- stats::cor(sim_vals)[1, 2]
     if (rval > 0 ) {
       ttxt <- substitute(paste(rho == rhoval, " , ", r == +rprint, " , ",
                                n == nsim),
@@ -416,7 +439,7 @@ corr_sim_movie_plot <- function(panel){
                          list(rhoval = rhoval, rprint = rprint, nsim = nsim))
     }
     graphics::title(main = ttxt, cex.main = 1.5)
-    graphics::par(old_par)
   })
+  graphics::par(old_par)
   return(invisible(panel))
 }

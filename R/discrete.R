@@ -113,6 +113,11 @@ discrete <- function(distn, var_support = NULL, params = list(),
                      param_step = list(), param_range = list(), p_vec = NULL,
                      smallest = 0.01, plot_par = list(), panel_plot = TRUE,
                      hscale = NA, vscale = hscale, observed_value = NA, ...) {
+  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
+    message("Package BWidget was not found.")
+    message("Please see the smovie README file for information.")
+    return()
+  }
   # To add another distribution
   # 1. misc.R: add code to set_fun_args(), parameter_range(), parameter_step(),
   #            variable_support()
@@ -224,11 +229,15 @@ discrete <- function(distn, var_support = NULL, params = list(),
   if (is.null(p_vec)) {
     p_vec <- c(0.001, 0.999)
   }
+  # Set a unique panel name to enable saving of objects to the correct panel
+  now_time <- strsplit(substr(date(), 12, 19), ":")[[1]]
+  now_time <- paste(now_time[1], now_time[2], now_time[3], sep = "")
+  my_panelname <- paste("discrete_", now_time, sep = "")
   # A list of arguments to pass to the plotting function via rp.control()
   pass_args <- fun_args
   names(pass_args) <- par_names
   my_title <- paste("pmf and cdf of the", root_name, "distribution")
-  for_rp_control <- c(list(title = my_title,
+  for_rp_control <- c(list(title = my_title, panelname = my_panelname,
                            dfun = dfun, pfun = pfun, qfun = qfun,
                            distn = distn, fun_args = fun_args, n_pars = n_pars,
                            par_names = par_names, pmf_or_cdf = pmf_or_cdf,
@@ -274,13 +283,15 @@ discrete <- function(distn, var_support = NULL, params = list(),
   rpanel::rp.radiogroup(panel= discrete_panel, pmf_or_cdf, c("pmf", "cdf"),
                         title = "pmf or cdf",
                         action = action)
-  rpanel::rp.do(discrete_panel, action = action)
+  if (!panel_plot) {
+    rpanel::rp.do(discrete_panel, action = action)
+  }
   return(invisible())
 }
 
 plot_discrete <- function(panel) {
+  old_par <- graphics::par(no.readonly = TRUE)
   with(panel, {
-    old_par <- graphics::par(no.readonly = TRUE)
     # Put the parameter values in a named list
     new_fun_args <- list()
     for (i in 1:n_pars) {
@@ -335,38 +346,40 @@ plot_discrete <- function(panel) {
       }
     }
     fun_args <- new_fun_args
-    my_xlab <- ifelse(!is.null(plot_par$xlab), plot_par$xlab, "x")
-    my_ylab <- ifelse(!is.null(plot_par$ylab), plot_par$ylab, "probability")
-    my_bty <- ifelse(!is.null(plot_par$bty), plot_par$bty, "l")
+    # Set default graphical parameters, except when supplied in plot_par
+    plot_par$xlab <- ifelse(!is.null(plot_par$xlab), plot_par$xlab, "x")
+    plot_par$ylab <- ifelse(!is.null(plot_par$ylab), plot_par$ylab, "probability")
+    plot_par$bty <- ifelse(!is.null(plot_par$bty), plot_par$bty, "l")
     if (pmf_or_cdf == "pmf") {
       probs <- do.call(dfun, c(list(x = var_support), fun_args))
       my_ylim <- c(0, max(probs))
-      my_main <- ifelse(!is.null(plot_par$main), plot_par$main,
-                        paste("pmf of the", the_distn, "distribution"))
-      if (!is.null(plot_par$col)) {
-        my_col <- plot_par$col
+      if (is.null(plot_par$ylim)) {
+        plot_par$ylim <- my_ylim
       }
-      for_plot <- list(x = var_support, y = probs, type = "h", xlab = my_xlab,
-                       ylab = my_ylab, col = my_col, bty = my_bty,
-                       main = my_main, ylim = my_ylim)
-      do.call(graphics::plot, for_plot)
+      plot_par$main <- ifelse(!is.null(plot_par$main), plot_par$main,
+                        paste("pmf of the", the_distn, "distribution"))
+      if (is.null(plot_par$col)) {
+        plot_par$col <- my_col
+      }
+      for_plot <- c(list(x = var_support, y = probs, type = "h"), plot_par)
     } else {
       probs <- do.call(pfun, c(list(q = var_support), fun_args))
       rval <- stats::approxfun(var_support, probs, method = "constant",
                                yleft = 0, yright = 1, f = 0, ties = "ordered")
       class(rval) <- c("ecdf", "stepfun", class(rval))
-      my_main <- ifelse(!is.null(plot_par$main), plot_par$main,
-                        paste("cdf of the", the_distn, "distribution"))
-      if (!is.null(plot_par$col)) {
-        my_col <- plot_par$col
-      } else {
-        my_col <- "black"
+      my_ylim <- c(0, 1)
+      if (is.null(plot_par$ylim)) {
+        plot_par$ylim <- my_ylim
       }
-      for_plot <- list(x = rval, xlab = my_xlab, ylab = my_ylab, col = my_col,
-                       bty = my_bty, main = my_main)
-      do.call(graphics::plot, for_plot)
+      plot_par$main <- ifelse(!is.null(plot_par$main), plot_par$main,
+                              paste("cdf of the", the_distn, "distribution"))
+      if (is.null(plot_par$col)) {
+        plot_par$col <- "black"
+      }
+      for_plot <- c(list(x = rval), plot_par)
     }
-    graphics::par(old_par)
+    do.call(graphics::plot, for_plot)
   })
+  graphics::par(old_par)
   return(panel)
 }

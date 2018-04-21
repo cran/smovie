@@ -101,7 +101,7 @@
 #'   This is not true in general, as shown by the other in-built example
 #'   (\code{distn} = "binom").
 #'
-#'   A user-supplied log-likelihod can be provided via \code{loglik}.
+#'   A user-supplied log-likelihood can be provided via \code{loglik}.
 #' @return Nothing is returned, only the animation is produced.
 #' @seealso \code{\link{movies}}: a user-friendly menu panel.
 #' @seealso \code{\link{smovie}}: general information about smovie.
@@ -152,6 +152,11 @@ wws <- function(model = c("norm", "binom"), theta_range = NULL, mult = 3,
                 theta_mle = NULL,
                 loglik = NULL, alg_score = NULL, alg_obs_info = NULL,
                 digits = 3, ...) {
+  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
+    message("Package BWidget was not found.")
+    message("Please see the smovie README file for information.")
+    return()
+  }
   temp <- set_scales(hscale, vscale)
   hscale <- temp$hscale
   vscale <- temp$vscale
@@ -273,17 +278,22 @@ wws <- function(model = c("norm", "binom"), theta_range = NULL, mult = 3,
   }
   test_stat <- "none"
   perform_tests <- "no"
+  # Set a unique panel name to enable saving of objects to the correct panel
+  now_time <- strsplit(substr(date(), 12, 19), ":")[[1]]
+  now_time <- paste(now_time[1], now_time[2], now_time[3], sep = "")
+  my_panelname <- paste("wws_", now_time, sep = "")
   # Create buttons for movie
-  wws_panel <- rpanel::rp.control("Wald, Wilks and Score",
-                                 loglik = loglik, theta_range = theta_range,
-                                 theta0 = theta0, user_args = user_args,
-                                 test_stat = "none",
-                                 perform_tests = "no", theta_mle = theta_mle,
-                                 loglik_at_mle = loglik_at_mle,
-                                 alg_score = alg_score,
-                                 alg_obs_info = alg_obs_info,
-                                 obs_info_at_mle = obs_info_at_mle,
-                                 digits = digits)
+  wws_panel <- rpanel::rp.control(title = "Wald, Wilks and Score",
+                                  panelname = my_panelname,
+                                  loglik = loglik, theta_range = theta_range,
+                                  theta0 = theta0, user_args = user_args,
+                                  test_stat = "none",
+                                  perform_tests = "no", theta_mle = theta_mle,
+                                  loglik_at_mle = loglik_at_mle,
+                                  alg_score = alg_score,
+                                  alg_obs_info = alg_obs_info,
+                                  obs_info_at_mle = obs_info_at_mle,
+                                  digits = digits)
   #
   redraw_plot <- NULL
   panel_redraw <- function(panel) {
@@ -314,15 +324,17 @@ wws <- function(model = c("norm", "binom"), theta_range = NULL, mult = 3,
   rpanel::rp.radiogroup(wws_panel, perform_tests, c("no", "yes"),
                         action = action,
                         title = "Calculate approximate p-values?")
-  rpanel::rp.do(wws_panel, action = action)
+  if (!panel_plot) {
+    rpanel::rp.do(wws_panel, action = action)
+  }
   return(invisible())
 }
 
 # Function to be called by clt_normal_movie().
 
 wws_plot <- function(panel) {
+  old_par <- graphics::par(no.readonly = TRUE)
   with(panel, {
-    old_par <- graphics::par(no.readonly = TRUE)
     par(oma = c(0, 0, 0, 0), mar = c(5, 5, 2, 4) + 0.1)
     # Produce plot of log-likelihood
     theta_vals <- seq(theta_range[1], theta_range[2], len = 200)
@@ -481,7 +493,7 @@ wws_plot <- function(panel) {
         graphics::legend("bottomright", ncol = 3, legend = c(leg1, leg2, leg3))
       }
     }
-    graphics::par(old_par)
   })
+  graphics::par(old_par)
   return(invisible(panel))
 }

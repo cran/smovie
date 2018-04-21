@@ -5,8 +5,8 @@
 \title{Extremal Types Theorem (ETT)}
 \usage{
 ett(n = 20, distn, params = list(), panel_plot = TRUE, hscale = NA,
-  vscale = hscale, n_add = 1, delta_n = 1, arrow = TRUE, pos = 1,
-  envir = as.environment(pos), ...)
+  vscale = hscale, n_add = 1, delta_n = 1, arrow = TRUE,
+  leg_cex = 1.25, ...)
 }
 \arguments{
 \item{n}{An integer scalar.  The size of the samples drawn from the
@@ -80,12 +80,8 @@ window.}
 simulated sample maximum from the top plot being placed into the
 bottom plot?}
 
-\item{pos}{A numeric integer.  Used in calls to \code{\link{assign}}
-to make information available across successive frames of a movie.
-By default, uses the current environment.}
-
-\item{envir}{An alternative way (to \code{pos}) of specifying the
-environment. See \code{\link{environment}}.}
+\item{leg_cex}{The argument \code{cex} to \code{\link[graphics]{legend}}.
+Allows the size of the legend to be controlled manually.}
 
 \item{...}{Additional arguments to the rpanel functions
 \code{\link[rpanel]{rp.button}} and
@@ -125,7 +121,10 @@ Loosely speaking, a consequence of the
   Samples of size \code{n} are repeatedly simulated from the distribution
   chosen using \code{distn}.  These samples are summarized using a histogram
   that appears at the top of the movie screen.  For each sample the maximum
-  of these \code{n} values is calculated, stored and added to another plot.
+  of these \code{n} values is calculated, stored and added to another plot,
+  situated below the first plot.
+  A \code{\link[graphics]{rug}} is added to a histograms provided that it
+  contains no more than 1000 points.
   This plot is either a histogram or an empirical c.d.f., chosen using a
   radio button.
 

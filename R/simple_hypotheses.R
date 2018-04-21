@@ -81,6 +81,11 @@ shypo <- function(mu0 = 0, sd = 6, eff = sd, n = 10, a = mu0 + eff / 2,
                   hscale = NA, vscale = hscale, delta_n = 1,
                   delta_a = sd / (10 * sqrt(n)), delta_eff = sd,
                   delta_mu0 = 1, delta_sd = 1) {
+  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
+    message("Package BWidget was not found.")
+    message("Please see the smovie README file for information.")
+    return()
+  }
   temp <- set_scales(hscale, vscale)
   hscale <- temp$hscale
   vscale <- temp$vscale
@@ -93,9 +98,14 @@ shypo <- function(mu0 = 0, sd = 6, eff = sd, n = 10, a = mu0 + eff / 2,
   if (sd <= 0) {
     stop("sd must be positive")
   }
+  # Set a unique panel name to enable saving of objects to the correct panel
+  now_time <- strsplit(substr(date(), 12, 19), ":")[[1]]
+  now_time <- paste(now_time[1], now_time[2], now_time[3], sep = "")
+  my_panelname <- paste("shypo_", now_time, sep = "")
   # Create buttons for movie
   set_values <- "no"
-  sh_panel <- rpanel::rp.control("Testing simple hypotheses",
+  sh_panel <- rpanel::rp.control(title = "Testing simple hypotheses",
+                                 panelname = my_panelname,
                                  n = n, a = a, mu0 = mu0, eff = eff,
                                  sd = sd, target_alpha = target_alpha,
                                  target_beta = target_beta,
@@ -142,15 +152,17 @@ shypo <- function(mu0 = 0, sd = 6, eff = sd, n = 10, a = mu0 + eff / 2,
                           "set a and n to achieve target alpha and beta"),
                         action = action,
                         title = title_text)
-  rpanel::rp.do(sh_panel, action = action)
+  if (!panel_plot) {
+    rpanel::rp.do(sh_panel, action = action)
+  }
   return(invisible())
 }
 
 # Function to be called by shypo().
 
 sh_plot <- function(panel) {
+  old_par <- graphics::par(no.readonly = TRUE)
   with(panel, {
-    old_par <- graphics::par(no.readonly = TRUE)
     mu1 <- mu0 + eff
     # Set a and/or n automatically if requested
     if (set_values == "set a to achieve target alpha") {
@@ -236,7 +248,7 @@ sh_plot <- function(panel) {
                      lty = 1, lwd = 2, col = "blue", bty = "n", cex = 1.25)
     graphics::legend("left", legend = expression(paste("type II, ", beta)),
                      lty = 1, lwd = 2, col = "red", bty = "n", cex = 1.25)
-    graphics::par(old_par)
   })
+  graphics::par(old_par)
   return(invisible(panel))
 }

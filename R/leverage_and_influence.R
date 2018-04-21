@@ -55,6 +55,11 @@
 #' @export
 lev_inf <- function(association = c("positive", "negative", "none"), n = 25,
                     panel_plot = TRUE, hscale = NA, vscale = hscale) {
+  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
+    message("Package BWidget was not found.")
+    message("Please see the smovie README file for information.")
+    return()
+  }
   temp <- set_scales(hscale, vscale)
   hscale <- temp$hscale
   vscale <- temp$vscale
@@ -78,8 +83,13 @@ lev_inf <- function(association = c("positive", "negative", "none"), n = 25,
   init.y <- mean(set1)
   outx <- init.x
   outy <- init.y
+  # Set a unique panel name to enable saving of objects to the correct panel
+  now_time <- strsplit(substr(date(), 12, 19), ":")[[1]]
+  now_time <- paste(now_time[1], now_time[2], now_time[3], sep = "")
+  my_panelname <- paste("lev_inf_", now_time, sep = "")
   # Create buttons for movie
-  lev_inf_1_panel <- rpanel::rp.control("Leverage and influence", x = x,
+  lev_inf_1_panel <- rpanel::rp.control(title = "Leverage and influence",
+                                        panelname = my_panelname, x = x,
                                         set1 = set1, outx = init.x,
                                         outy = init.y)
   #
@@ -109,7 +119,9 @@ lev_inf <- function(association = c("positive", "negative", "none"), n = 25,
                           repeatinterval = 20, initval = 0,
                           title = "y coefficient:", action = action,
                           showvalue = FALSE)
-  rpanel::rp.do(lev_inf_1_panel, action = action)
+  if (!panel_plot) {
+    rpanel::rp.do(lev_inf_1_panel, action = action)
+  }
   return(invisible())
 }
 
@@ -140,8 +152,8 @@ expl_plot <- function(x, y, c1, c2, ntitle, p = 0.0185, q = 0.05, nleg = NULL,
 }
 
 lev_inf_1_plot <- function(panel){
+  old_par <- graphics::par(no.readonly = TRUE)
   with(panel, {
-    old_par <- graphics::par(no.readonly = TRUE)
     graphics::par(oma = c(0, 0, 0, 0), mar = c(3, 4, 1, 2), las = 1, pch = 16,
                   bty = "l", mfrow = c(1, 1))
     lm1 <- stats::lm(set1 ~ x)
@@ -155,8 +167,8 @@ lev_inf_1_plot <- function(panel){
               ntitle = "Effects of an observation on LS regression line",
               nleg = 1, xlim = c(-0.75, 1.75), ylim = c(-0.75, 1.75),
               col = pcol)
-    graphics::par(old_par)
   })
+  graphics::par(old_par)
   return(invisible(panel))
 }
 

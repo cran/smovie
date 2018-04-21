@@ -3,9 +3,9 @@
 smovie
 ======
 
-[![Travis-CI Build Status](https://travis-ci.org/paulnorthrop/smovie.svg?branch=master)](https://travis-ci.org/paulnorthrop/smovie) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/paulnorthrop/smovie?branch=master&svg=true)](https://ci.appveyor.com/project/paulnorthrop/smovie)
+[![Travis-CI Build Status](https://travis-ci.org/paulnorthrop/smovie.svg?branch=master)](https://travis-ci.org/paulnorthrop/smovie) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/paulnorthrop/smovie?branch=master&svg=true)](https://ci.appveyor.com/project/paulnorthrop/smovie) [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/smovie)](https://cran.r-project.org/package=smovie)
 
-### Some movies to teach statistical concepts
+### Some Movies to Illustrate Concepts in Statistics
 
 ### What does smovie do?
 
@@ -26,6 +26,8 @@ To get the current released version from CRAN:
 ``` r
 install.packages("smovie")
 ```
+
+Note that [`rpanel`](https://cran.r-project.org/package=rpanel) requires the Tcl extension [`BWidget`](https://sourceforge.net/projects/tcllib/files/BWidget/). `BWidget` is included in the R installers for Windows and macOS. For other platforms please see [Section 1.1.7 of Writing R Extensions](https://cran.r-project.org/doc/manuals/r-devel/R-exts.html#Non_002dR-scripts-in-packages) for installation advice.
 
 ### Vignettes
 

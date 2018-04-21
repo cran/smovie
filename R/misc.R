@@ -330,9 +330,16 @@ set_leg_pos <- function(distn, fun_args) {
       }
     }
   }
+  if (distn == "binomial") {
+    if (fun_args$prob > 0.5) {
+      distn <- "binomial_large_prob"
+    } else {
+      distn <- "binomial_small_prob"
+    }
+  }
   top_leg_pos <-
     switch(distn,
-           "exponential" = "right",
+           "exponential" = "topright",
            "uniform" = "topleft",
            "gp_neg_1" = "topleft",
            "gp_neg" = "topright",
@@ -350,34 +357,36 @@ set_leg_pos <- function(distn, fun_args) {
            "cauchy" = "right",
            "f" = "right",
            "weibull" = "right",
-           "binomial" = "right",
-           "geometric" = "right",
-           "hypergeometric" = "right",
-           "negative binomial" = "right",
-           "poisson" = "right",
+           "binomial_large_prob" = "topleft",
+           "binomial_small_prob" = "topright",
+           "geometric" = "topright",
+           "hypergeometric" = "topright",
+           "negative binomial" = "topright",
+           "poisson" = "topright",
            "ngev" = "topleft"
     )
   bottom_leg_pos <-
     switch(distn,
-           "exponential" = "right",
-           "uniform" = "left",
-           "gp_neg_1" = "left",
-           "gp_neg" = "left",
-           "gp_non_neg" = "right",
-           "gev_neg" = "right",
-           "gev_non_neg" = "right",
-           "normal" = "right",
+           "exponential" = "topright",
+           "uniform" = "topright",
+           "gp_neg_1" = "topleft",
+           "gp_neg" = "topleft",
+           "gp_non_neg" = "topright",
+           "gev_neg" = "topright",
+           "gev_non_neg" = "topright",
+           "normal" = "topright",
            "beta_topleft" = "topleft",
            "beta_topright" = "topleft",
            "beta_top" = "topleft",
-           "t" = "right",
-           "gamma" = "right",
-           "chi-squared" = "right",
-           "lognormal" = "right",
-           "cauchy" = "right",
-           "f" = "right",
-           "weibull" = "right",
-           "binomial" = "topright",
+           "t" = "topright",
+           "gamma" = "topright",
+           "chi-squared" = "topright",
+           "lognormal" = "topright",
+           "cauchy" = "topright",
+           "f" = "topright",
+           "weibull" = "topright",
+           "binomial_large_prob" = "topleft",
+           "binomial_small_prob" = "topright",
            "geometric" = "topright",
            "hypergeometric" = "topleft",
            "negative binomial" = "topright",
