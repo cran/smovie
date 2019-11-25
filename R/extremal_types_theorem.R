@@ -17,7 +17,7 @@
 #'   observations are sampled.   Distributions \code{"beta"},
 #'   \code{"cauchy"}, \code{"chisq"}, \code{"chi-squared"},
 #'   \code{"exponential"}, \code{"f"}, \code{"gamma"}, \code{"gp"},
-#'   \code{lognormal}, \code{log-normal},  \code{"ngev"}, \code{"normal"},
+#'   \code{"lognormal"}, \code{"log-normal"},  \code{"ngev"}, \code{"normal"},
 #'   \code{"t"}, \code{"uniform"} and \code{"weibull"} are recognised, case
 #'   being ignored.
 #'
@@ -101,7 +101,7 @@
 #'   that appears at the top of the movie screen.  For each sample the maximum
 #'   of these \code{n} values is calculated, stored and added to another plot,
 #'   situated below the first plot.
-#'   A \code{\link[graphics]{rug}} is added to a histograms provided that it
+#'   A \code{\link[graphics]{rug}} is added to a histogram provided that it
 #'   contains no more than 1000 points.
 #'   This plot is either a histogram or an empirical c.d.f., chosen using a
 #'   radio button.
@@ -142,8 +142,9 @@
 #'   For further detail about the examples specified by \code{distn}
 #'   see Chapter 1 of Leadbetter et al. (1983) and Chapter 3 of
 #'   Coles (2001).  In many of these examples
-#'   (\code{"exponential", "normal", "gamma", "lognormal", "chi-squared",
-#'   "weibull", "ngev"}) the limiting GEV distribution has a shape
+#'   (\code{"exponential"}, \code{"normal"}, \code{"gamma"},
+#'   \code{"lognormal"}, \code{"chi-squared"}, \code{"weibull"}, \code{"ngev"})
+#'   the limiting GEV distribution has a shape
 #'   parameter that is equal to 0.  In the \code{"uniform"} case the limiting
 #'   shape parameter is -1 and in the \code{"beta"} case it is
 #'   -1 / \code{shape2}, where \code{shape2} is the
@@ -386,11 +387,19 @@ ett <- function(n = 20, distn, params = list(), panel_plot = TRUE, hscale = NA,
   } else {
     action <- ett_movie_plot
   }
-  #
+  # Check whether or not n = 1 will work
+  n_check <- 1
+  b1 <- do.call(qfun, c(list(p = 1 - 1 / n_check), fun_args))
+  a1 <- (1 / n_check) / do.call(dfun, c(list(x = b1), fun_args))
+  if (any(is.infinite(c(a1, b1)))) {
+    n_lower <- 2
+  } else {
+    n_lower <- 1
+  }
   rpanel::rp.doublebutton(panel = ett_panel, variable = n, step = delta_n,
                           title = "sample size, n",
                           action = action, initval = n,
-                          range = c(2, NA), showvalue = TRUE, ...)
+                          range = c(n_lower, NA), showvalue = TRUE, ...)
   if (n_add == 1) {
     my_title <- paste("simulate another sample")
   } else {
@@ -424,7 +433,9 @@ ett <- function(n = 20, distn, params = list(), panel_plot = TRUE, hscale = NA,
 # Function to be called by ett().
 
 ett_movie_plot <- function(panel) {
-  old_par <- graphics::par(no.readonly = TRUE)
+  oldpar <- graphics::par(mfrow = c(2, 1), oma = c(0, 0, 0, 0),
+                          mar = c(4, 4, 2, 2) + 0.1)
+  on.exit(graphics::par(oldpar))
   # To please R CMD check
   n <- distn <- fun_args <- pdf_or_cdf <- show_dens <- n_add <- rfun <-
     qfun <- pfun <- top_range <- dfun <- xlab <- top_leg_pos <- arrow <-
@@ -583,7 +594,9 @@ ett_movie_plot <- function(panel) {
       ytrue <- n * temp * do.call(dfun, d_list)
       my_ylab <- "pdf"
       # Set the top of the y-axis
-      ytop <- max(ygev, ytrue) * 1.5
+      if (n > 1){
+        ytop <- max(ygev, ytrue) * 1.5
+      }
     } else{
       ytrue <- exp(n * do.call(pfun, p_list))
       my_ylab <- "cdf"
@@ -685,6 +698,5 @@ ett_movie_plot <- function(panel) {
     old_show_dens <- show_dens
     old_show_dens_only <- show_dens_only
   })
-  graphics::par(old_par)
   return(panel)
 }

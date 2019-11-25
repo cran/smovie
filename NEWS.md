@@ -1,3 +1,21 @@
+# smovie 1.1.1
+
+## New features
+
+* New movie: `cltq()`.  Central Limit Theorem for sample quantiles.  Illustrates the sampling distribution of the sample quantiles and the central limit theorem for sample quantiles.
+
+* New movie: `mean_vs_median()`.  Compares the sampling distributions of the mean and median for random samples from either a standard normal distribution or a standard Student t distribution.
+
+* pkgdown documentation at https://paulnorthrop.github.io/smovie/
+
+## Bug fixes and minor improvements
+
+* In `ett()` the sample size `n` is now allowed to drop to 1 for those cases in which the normalising constants underlying the calculations are finite, such as the exponential, uniform and generalised Pareto distributions.  Otherwise, 2 is the smallest allowable value for `n`.
+
+* When the Wald, Wilks and Score tests movie `wws()` is called from the main menu, via `movies()` a binomial example is used, so that the differences between the test statistics can be seen.
+
+* Adjustments have been made to the `wws()` movie to ensure that the plot stays completely still during the animations.
+
 # smovie 1.0.1
 
 ## Bug fixes and minor improvements

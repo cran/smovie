@@ -17,7 +17,7 @@ than 2.}
   observations are sampled.   Distributions \code{"beta"},
   \code{"cauchy"}, \code{"chisq"}, \code{"chi-squared"},
   \code{"exponential"}, \code{"f"}, \code{"gamma"}, \code{"gp"},
-  \code{lognormal}, \code{log-normal},  \code{"ngev"}, \code{"normal"},
+  \code{"lognormal"}, \code{"log-normal"},  \code{"ngev"}, \code{"normal"},
   \code{"t"}, \code{"uniform"} and \code{"weibull"} are recognised, case
   being ignored.
 
@@ -123,7 +123,7 @@ Loosely speaking, a consequence of the
   that appears at the top of the movie screen.  For each sample the maximum
   of these \code{n} values is calculated, stored and added to another plot,
   situated below the first plot.
-  A \code{\link[graphics]{rug}} is added to a histograms provided that it
+  A \code{\link[graphics]{rug}} is added to a histogram provided that it
   contains no more than 1000 points.
   This plot is either a histogram or an empirical c.d.f., chosen using a
   radio button.
@@ -164,8 +164,9 @@ Loosely speaking, a consequence of the
   For further detail about the examples specified by \code{distn}
   see Chapter 1 of Leadbetter et al. (1983) and Chapter 3 of
   Coles (2001).  In many of these examples
-  (\code{"exponential", "normal", "gamma", "lognormal", "chi-squared",
-  "weibull", "ngev"}) the limiting GEV distribution has a shape
+  (\code{"exponential"}, \code{"normal"}, \code{"gamma"},
+  \code{"lognormal"}, \code{"chi-squared"}, \code{"weibull"}, \code{"ngev"})
+  the limiting GEV distribution has a shape
   parameter that is equal to 0.  In the \code{"uniform"} case the limiting
   shape parameter is -1 and in the \code{"beta"} case it is
   -1 / \code{shape2}, where \code{shape2} is the

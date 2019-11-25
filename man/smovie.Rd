@@ -7,8 +7,8 @@
 \title{smovie: some movies to illustrate concepts in statistics}
 \description{
 These movies are animations used to illustrate key statistical ideas.
-They are produced using the \code{\link[rpanel]{rpanel-package}},
-which has
+They are produced using the \code{\link[rpanel:rpanel.package]{rpanel}}
+package, which has
 \href{https://sourceforge.net/projects/tcllib/files/BWidget/}{\code{BWidget}}
 as a system requirement.
 \code{BWidget} is included in the R installers for Windows and macOS.
@@ -40,6 +40,10 @@ There are movies on the following topics.
 \itemize{
   \item {\link[=clt]{Central Limit Theorem: sampling distribution
     of a sample mean}}
+  \item {\link[=clt]{Central Limit Theorem for sample quantiles: sampling
+    distribution of the 100p\% sample quantile}}
+  \item {\link[=mean_vs_median]{Sampling distributions of the mean
+    and median}}
   \item {\link[=ett]{Extremal Types Theorem: sampling distribution
     of a sample maximum}}
   \item {\link[=correlation]{Pearson product moment correlation

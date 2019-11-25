@@ -19,7 +19,8 @@
 #' @examples
 #' movies()
 #' @seealso \code{\link{discrete}}, \code{\link{continuous}},
-#'   \code{\link{clt}}, \code{\link{ett}}, \code{\link{correlation}},
+#'   \code{\link{clt}}, \code{\link{cltq}}, \code{\link{ett}},
+#'   \code{\link{mean_vs_median}}, \code{\link{correlation}},
 #'   \code{\link{lev_inf}}, \code{\link{wws}}, \code{\link{shypo}}.
 #' @seealso \code{\link{smovie}}: general information about smovie.
 #' @export
@@ -168,11 +169,26 @@ movies <- function(fixed_range = TRUE, hscale = NA, vscale = hscale) {
     else if (menu.panel$demo == "Maximum") {
       ett(distn = "exponential", hscale = hscale, vscale = vscale)
     }
+    else if (menu.panel$demo == "Median") {
+      cltq(distn = "exponential", p = 0.5, hscale = hscale, vscale = vscale)
+    }
+    else if (menu.panel$demo == "Mean vs median, normal") {
+      mean_vs_median()
+    }
+    else if (menu.panel$demo == "Mean vs median, Student t(2)") {
+      mean_vs_median(t_df = 2)
+    }
+    else if (menu.panel$demo == "Lower quartile") {
+      cltq(distn = "exponential", p = 0.25, hscale = hscale, vscale = vscale)
+    }
+    else if (menu.panel$demo == "Upper quartile") {
+      cltq(distn = "exponential", p = 0.75, hscale = hscale, vscale = vscale)
+    }
     else if (menu.panel$demo == "Leverage and influence") {
       lev_inf(hscale = hscale, vscale = vscale)
     }
     else if (menu.panel$demo == "Wald, Wilks and Score tests") {
-      wws(theta0 = 0.8, hscale = hscale, vscale = vscale)
+      wws(model = "binom", theta0 = 0.5, hscale = hscale, vscale = vscale)
     }
     else if (menu.panel$demo == "Testing simple hypotheses") {
       shypo(mu0 = 0, eff = 5, n = 1, hscale = hscale, vscale = vscale)
@@ -299,7 +315,12 @@ movies <- function(fixed_range = TRUE, hscale = NA, vscale = hscale) {
   list("Sampling distributions",
        "Pearson correlation coefficient",
        "Mean",
-       "Maximum"
+       "Maximum",
+       "Median",
+       "Mean vs median, normal",
+       "Mean vs median, Student t(2)",
+       "Lower quartile",
+       "Upper quartile"
   ),
   list("CLT",
        " beta",
