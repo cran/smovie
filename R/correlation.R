@@ -75,6 +75,11 @@ correlation <- function(n = 30, rho = 0, panel_plot = TRUE, hscale = NA,
     message("Please see the smovie README file for information.")
     return()
   }
+  # Check that SuppDists is installed
+  if (!requireNamespace("SuppDists", quietly = TRUE)) {
+    stop("the SuppDists package is needed. Please install it.",
+         call. = FALSE)
+  }
   temp <- set_scales(hscale, vscale)
   hscale <- temp$hscale
   vscale <- temp$vscale
@@ -158,7 +163,7 @@ correlation <- function(n = 30, rho = 0, panel_plot = TRUE, hscale = NA,
                       title = "simulate another sample",
                       ...)
   }
-  rpanel::rp.doublebutton(corr_sim_panel, nsim, delta_n, range = c(6, 1000),
+  rpanel::rp.doublebutton(corr_sim_panel, nsim, delta_n, range = c(2, 1000),
                           repeatinterval = 20, initval = n,
                           title = "sample size, n",
                           action = action, showvalue = TRUE, ...)
@@ -305,7 +310,7 @@ corr_sim_movie_plot <- function(panel){
       }
       if (!fisher_z | (fisher_z & abs(rho) < 1)) {
         graphics::axis(1, line = 0.5)
-        graphics::axis(1, line = 0.5, at = c(-1, 1))
+        graphics::axis(1, line = 0.5, at = c(-1, 1),  labels = c("-1.0", "1.0"))
       }
     } else if (nsim > 2) {
       zvals <- atanh(rvals)
