@@ -1,8 +1,30 @@
+# smovie 1.1.3
+
+## UCL Eugenics Inquiry
+
+Explicit references to (Karl) Pearson have removed from the package following the [Inquiry into the History of Eugenics at UCL](https://www.ucl.ac.uk/provost/inquiry-history-eugenics-ucl).
+
+## Bug fixes and minor improvements
+
+* Errors in test name strings supplied to `testthat::test_that()` have been corrected, to avoid CRAN package check ERRORs.
+
+* In `wws()` the gradient of the log-likelihood was unnecessarily labelled with a red "score" when the null value of theta0 is less than the MLE of theta.  This has been removed.
+
+* In `wws()`, when `model = "norm"` the value of `mu` could not be passed as described.  This has been corrected.
+
+* In `shypo()` there was a bug that meant that the plots did not behave as intended when `mu0` is not equal to (the default value of) 0.  This has been corrected.
+
+* In the documentation for `shypo()` a minor typo at the end of the Details section has been corrected: "based on the current value of n" has been deleted.
+
+* In `discrete()` radio buttons have been added to switch between the version of the the geometric distribution based on the number of trials up to including the first success and the number of failures until the first success.
+
+* In `discrete()` a typo has been corrected in the 4th line of the documentation of the argument `distn`: "hypergeometric" should have read "negative binomial".
+
 # smovie 1.1.2
 
 ## Dependencies
 
-* The packages `revdbayes` and `SuppDists` have been demoted from Imports to Suggests.  An error is thrown if actions that require either of these packages occurs.
+* The packages `revdbayes` and `SuppDists` have been demoted from Imports to Suggests.  An error is thrown if actions that require either of these packages occurs and that package is not available.
 
 # smovie 1.1.1
 
@@ -12,7 +34,7 @@
 
 * New movie: `mean_vs_median()`.  Compares the sampling distributions of the mean and median for random samples from either a standard normal distribution or a standard Student t distribution.
 
-* pkgdown documentation at https://paulnorthrop.github.io/smovie/
+* pkgdown documentation at [https://paulnorthrop.github.io/smovie/](https://paulnorthrop.github.io/smovie/).
 
 ## Bug fixes and minor improvements
 

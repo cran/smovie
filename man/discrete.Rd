@@ -29,7 +29,7 @@ discrete(
   are recognised, case being ignored.  The relevant distributional functions
   \code{dxxx} and \code{pxxx} in the \code{\link[stats]{stats-package}}
   are used.  The abbreviations \code{xxx} are also recognised.
-  If \code{distn = "hypergeometric"} then the \code{(size, prob)}
+  If \code{distn = "negative binomial"} then the \code{(size, prob)}
   parameterisation is used, unless a value for \code{mu} is provided
   via the argument \code{params} when the \code{(size, mu)}
   parameterisation is used.
@@ -89,9 +89,9 @@ a function then the default is \code{p_vec = c(0.001, 0.999)}.}
 used for any strictly positive parameters when \code{distn} is a string.}
 
 \item{plot_par}{A named list of graphical parameters
-(see \code{link[graphics]{par}}) to be passed to
-\code{\link[graphics]{plot}}.  This may be used to alter the appearance
-of the plots of the p.m.f. and c.d.f.}
+(see \code{\link[graphics]{par}}) to be passed to
+\code{\link[graphics:plot.default]{plot}}.  This may be used to alter the
+appearance of the plots of the p.m.f. and c.d.f.}
 
 \item{panel_plot}{A logical parameter that determines whether the plot
 is placed inside the panel (\code{TRUE}) or in the standard graphics
@@ -124,6 +124,11 @@ The movie starts with a plot of the p.m.f. of the distribution
   for the initial values of the parameters.  Buttons
   increase (+) or decrease (-) each parameter.  There are radio buttons
   to switch the plot from the p.m.f. to the c.d.f. and back.
+
+  If \code{distn == "geometric"} then there are radio buttons to switch
+  between the version of the the geometric distribution based on the
+  number of trials up to including the first success and the number of
+  failures until the first success.
 
   Owing to a conflict with the argument \code{size} of the function
   \code{\link[rpanel]{rp.control}} the parameter \code{size} of,

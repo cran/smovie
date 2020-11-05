@@ -64,9 +64,12 @@
 #'       \code{target_alpha}, based on the current value of \code{n};}
 #'     \item{}{set \code{a} and (integer) \code{n} to achieve (or better) the
 #'       respective target type I and type II error probabilities of
-#'       \code{target_alpha} and \code{target_beta}, based on the current
-#'       value of \code{n}.}
+#'       \code{target_alpha} and \code{target_beta}.}
 #'   }
+#'   If \code{eff = 0} then a plot will be produced even though this case is
+#'   not practically meaningful.  In the "set a and n to achieve target alpha
+#'   and beta" case, the plot will be the same as the case "set a and n by
+#'   hand" case.
 #'
 #' @return Nothing is returned, only the animation is produced.
 #' @seealso \code{\link{movies}}: a user-friendly menu panel.
@@ -165,19 +168,23 @@ sh_plot <- function(panel) {
                           mar = c(3, 3, 2, 2) + 0.1)
   on.exit(graphics::par(oldpar))
   with(panel, {
+    if (set_values == "set a and n to achieve target alpha and beta" &
+        eff == 0) {
+      set_values <- "set a and n by hand"
+    }
     mu1 <- mu0 + eff
     # Set a and/or n automatically if requested
     if (set_values == "set a to achieve target alpha") {
       z_alpha <- stats::qnorm(target_alpha, mean = 0, sd = 1,
                               lower.tail = FALSE)
-      a <- sd * z_alpha / sqrt(n)
+      a <- sd * z_alpha / sqrt(n) + mu0
     } else if (set_values == "set a and n to achieve target alpha and beta") {
       z_alpha <- stats::qnorm(target_alpha, mean = 0, sd = 1,
                               lower.tail = FALSE)
       z_beta <- stats::qnorm(target_beta, mean = 0, sd = 1,
                              lower.tail = FALSE)
       n <- sd ^ 2 * (z_alpha + z_beta) ^ 2 / eff ^ 2
-      a <- sd * z_alpha / sqrt(n)
+      a <- sd * z_alpha / sqrt(n) + mu0
       n <- ceiling(n)
     }
     # Set the standard error for later use, based on the current value of n

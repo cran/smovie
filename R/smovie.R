@@ -23,7 +23,7 @@
 #' @references Bowman, A., Crawford, E., Alexander, G. and Bowman, R. W.
 #'  (2007). rpanel: Simple Interactive Controls for R Functions Using the
 #'  tcltk Package.  \emph{Journal of Statistical Software}, \strong{17(9)},
-#'  1-18. \url{http://www.jstatsoft.org/v17/i09/}.
+#'  1-18. \url{https://www.jstatsoft.org/v17/i09/}.
 #'
 #' @section {Probability distributions}:
 #' \itemize{
@@ -41,8 +41,7 @@
 #'     and median}}
 #'   \item {\link[=ett]{Extremal Types Theorem: sampling distribution
 #'     of a sample maximum}}
-#'   \item {\link[=correlation]{Pearson product moment correlation
-#'     coefficient}}
+#'   \item {\link[=correlation]{Correlation coefficient}}
 #' }
 #'
 #' @section {Regression}:
