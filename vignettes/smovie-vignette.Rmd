@@ -10,6 +10,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: smovie.bib
+csl: taylor-and-francis-chicago-author-date.csl
 ---
 
 ```{r, include = FALSE}
@@ -101,7 +102,7 @@ knitr::include_graphics("cltq_gamma.PNG")
 
 The [Extremal Types Theorem](https://en.wikipedia.org/wiki/Extreme_value_theory#Univariate_theory) is rather like the CLT but applied to the sample maximum instead of the sample mean.  Loosely speaking, it states that, in many situations, the maximum of a large number $n$ of independent random variables has approximately a Generalized Extreme Value (GEV) distribution with shape parameter $\xi$.  See @Coles2001 for an introductory account of extreme value theory.
 
-The function `ett` can be used to illustrate the convergence of the distribution of the sample maximum to a GEV limit.  Several continuous distributions for the underlying variables are available corresponding to different values of the limiting shape parameter $\xi$.  `ett` works in essentially the same way as `clt` except that the exact sampling distribution of the sample maximm is also displayed.
+The function `ett` can be used to illustrate the convergence of the distribution of the sample maximum to a GEV limit.  Several continuous distributions for the underlying variables are available corresponding to different values of the limiting shape parameter $\xi$.  `ett` works in essentially the same way as `clt` except that the exact sampling distribution of the sample maximum is also displayed.
 
 ```{r, eval = FALSE}
 ett(distn = "exponential")
@@ -186,7 +187,7 @@ wws(theta0 = 0.5, model = "binom", data = c(7, 13))
 knitr::include_graphics("wws.PNG")
 ```
 
-### Testing simply hypothesis: normally distributed variables
+### Testing a simple hypothesis: normally distributed variables
 
 Consider a random sample $X_1, \ldots, X_n$ from a normal 
 distribution with unknown mean $\mu$ and known variance $\sigma^2$. 

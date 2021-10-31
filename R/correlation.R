@@ -26,8 +26,7 @@
 #'   \code{\link[rpanel]{rp.doublebutton}}, not including \code{panel},
 #'   \code{variable}, \code{title}, \code{step}, \code{action}, \code{initval},
 #'   \code{range}.
-#' @details Random samples of size \eqn{n} are simulated from a bivariate
-#'   normal distribution
+#' @details Random samples of size \eqn{n} are simulated from a
 #'   \href{https://en.wikipedia.org/wiki/Multivariate_normal_distribution}{bivariate normal distribution}
 #'   in which each of the variables has a mean of 0 and a variance of 1 and
 #'   the correlation \eqn{\rho} between the variables is chosen by the user.
@@ -70,11 +69,6 @@
 #' @export
 correlation <- function(n = 30, rho = 0, panel_plot = TRUE, hscale = NA,
                         vscale = hscale, delta_n = 1, delta_rho = 0.1,  ...) {
-  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
-    message("Package BWidget was not found.")
-    message("Please see the smovie README file for information.")
-    return()
-  }
   # Check that SuppDists is installed
   if (!requireNamespace("SuppDists", quietly = TRUE)) {
     stop("the SuppDists package is needed. Please install it.",

@@ -158,11 +158,11 @@
 #' @return Nothing is returned, only the animation is produced.
 #' @references Coles, S. G. (2001) \emph{An Introduction to Statistical
 #'   Modeling of Extreme Values}, Springer-Verlag, London.
-#'   \url{https://doi.org/10.1007/978-1-4471-3675-0_3}
+#'   \doi{10.1007/978-1-4471-3675-0_3}
 #' @references Leadbetter, M., Lindgren, G. and Rootzen, H. (1983)
 #'   \emph{Extremes and Related Properties of Random Sequences and Processes.}
 #'   Springer-Verlag, New York.
-#'   \url{https://doi.org/10.1007/978-1-4612-5449-2}
+#'   \doi{10.1007/978-1-4612-5449-2}
 #' @seealso \code{\link{movies}}: a user-friendly menu panel.
 #' @seealso \code{\link{smovie}}: general information about smovie.
 #' @examples
@@ -178,11 +178,6 @@
 ett <- function(n = 20, distn, params = list(), panel_plot = TRUE, hscale = NA,
                 vscale = hscale, n_add = 1, delta_n = 1, arrow = TRUE,
                 leg_cex = 1.25, ...) {
-  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
-    message("Package BWidget was not found.")
-    message("Please see the smovie README file for information.")
-    return()
-  }
   # Check that revdbayes is installed
   if (!requireNamespace("revdbayes", quietly = TRUE)) {
     stop("the revdbayes package is needed. Please install it.",

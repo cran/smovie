@@ -1,8 +1,20 @@
+# smovie 1.1.4
+
+## Bug fixes and minor improvements
+
+* The BWidget Tcl/Tk module is no longer a system requirement for the rpanel package on which smovie depends.  rpanel checks whether BWidget is available wen it is required and provides instruction if it is not.  This task has been removed from smovie.
+
+* In help files and vignettes DOIs are used rather than URLs.
+
+* A typo in a section heading in the vignette has been corrected: "simply" becomes "a simple".
+
+* `LazyData: TRUE` has been removed from DESCRIPTION, because there is no data/ directory in smovie.
+
 # smovie 1.1.3
 
 ## UCL Eugenics Inquiry
 
-Explicit references to (Karl) Pearson have removed from the package following the [Inquiry into the History of Eugenics at UCL](https://www.ucl.ac.uk/provost/inquiry-history-eugenics-ucl).
+* Explicit references to (Karl) Pearson have removed from the package following the [Inquiry into the History of Eugenics at UCL](https://www.ucl.ac.uk/provost/inquiry-history-eugenics-ucl).
 
 ## Bug fixes and minor improvements
 

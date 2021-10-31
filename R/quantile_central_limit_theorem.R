@@ -79,8 +79,7 @@
 #'   identically distributed random variables, each with probability density
 #'   function \eqn{f} and 100\eqn{p}\% quantile \eqn{\xi(p)}, has
 #'   \strong{approximately} a normal distribution.  See, for example,
-#'   \href{https://doi.org/10.1007/b98855}{Lehmann (1999)} for a precise
-#'   statement and conditions.
+#'   Lehmann (1999) for a precise statement and conditions.
 #'
 #'   This movie considers examples where this limiting result holds and
 #'   illustrates graphically the closeness of the limiting approximation
@@ -118,7 +117,7 @@
 #'   }
 #' @return Nothing is returned, only the animation is produced.
 #' @references Lehman, E. L. (1999) \emph{Elements of Large-Sample Theory},
-#'   Springer-Verlag, London. \url{https://doi.org/10.1007/b98855}
+#'   Springer-Verlag, London. \doi{10.1007/b98855}
 #' @seealso \code{\link{movies}}: a user-friendly menu panel.
 #' @seealso \code{\link{smovie}}: general information about smovie.
 #' @seealso \code{\link{clt}}: Central Limit Theorem.
@@ -132,11 +131,6 @@
 cltq <- function(n = 20, p = 0.5, distn, params = list(), type = 7,
                  panel_plot = TRUE, hscale = NA, vscale = hscale, n_add = 1,
                  delta_n = 1, arrow = TRUE, leg_cex = 1.25, ...) {
-  if (!tcltk::is.tclObj(tcltk::tclRequire("BWidget"))) {
-    message("Package BWidget was not found.")
-    message("Please see the smovie README file for information.")
-    return()
-  }
   temp <- set_scales(hscale, vscale)
   hscale <- temp$hscale
   vscale <- temp$vscale
