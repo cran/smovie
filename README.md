@@ -6,6 +6,10 @@
 [![AppVeyor Build
 Status](https://ci.appveyor.com/api/projects/status/github/paulnorthrop/smovie?branch=master&svg=true)](https://ci.appveyor.com/project/paulnorthrop/smovie)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/smovie)](https://cran.r-project.org/package=smovie)
+[![Downloads
+(monthly)](https://cranlogs.r-pkg.org/badges/smovie?color=brightgreen)](https://cran.r-project.org/package=smovie)
+[![Downloads
+(total)](https://cranlogs.r-pkg.org/badges/grand-total/smovie?color=brightgreen)](https://cran.r-project.org/package=smovie)
 
 ### Some Movies to Illustrate Concepts in Statistics
 
@@ -28,8 +32,8 @@ score likelihood-based test statistics, for a model with a scalar
 unknown parameter. The user can change the value of the parameter under
 a simple null hypothesis and observe the effect on the test statistics.
 The following code uses the log-likelihood from a binomial experiment
-and considers the null hypothesis that the success probability *θ* is
-equal to *θ*<sub>0</sub>. The user may specify their own log-likelihood.
+and considers the null hypothesis that the success probability $\theta$
+is equal to $\theta_0$. The user may specify their own log-likelihood.
 
 ``` r
 wws(theta0 = 0.5)
