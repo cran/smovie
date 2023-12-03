@@ -1,8 +1,8 @@
 Package: smovie
 Type: Package
 Title: Some Movies to Illustrate Concepts in Statistics
-Version: 1.1.5
-Date: 2023-09-02
+Version: 1.1.6
+Date: 2023-12-02
 Authors@R: person(c("Paul", "J."), "Northrop", email = "p.northrop@ucl.ac.uk",
   role = c("aut", "cre", "cph"))
 Description: Provides movies to help students to understand statistical 
@@ -30,8 +30,8 @@ URL: https://paulnorthrop.github.io/smovie/,
 BugReports: https://github.com/paulnorthrop/smovie/issues
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2023-09-02 19:26:01 UTC; paul
+Packaged: 2023-12-02 20:48:52 UTC; Paul
 Author: Paul J. Northrop [aut, cre, cph]
 Maintainer: Paul J. Northrop <p.northrop@ucl.ac.uk>
 Repository: CRAN
-Date/Publication: 2023-09-02 19:40:02 UTC
+Date/Publication: 2023-12-03 01:50:02 UTC
